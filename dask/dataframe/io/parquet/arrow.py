@@ -1539,6 +1539,14 @@ class ArrowDatasetEngine(Engine):
             # Will only have this if the engine="pyarrow-dataset"
             partitioning = kwargs.pop("partitioning", None)
 
+            # Check if we are reading from Skyhook
+            skyhook_config = kwargs.pop("skyhook_config", None)
+
+            if skyhook_config:
+                format_ = pa_ds.RadosParquetFileFormat(skyhook_config, "cephfs_data")
+            else:
+                format_ = "parquet"
+
             # Check if we need to generate a fragment for filtering.
             # We only need to do this if we are applying filters to
             # columns that were not already filtered by "partition".
@@ -1550,7 +1558,7 @@ class ArrowDatasetEngine(Engine):
                 ds = pa_ds.dataset(
                     path_or_frag,
                     filesystem=fs,
-                    format="parquet",
+                    format=format_,
                     partitioning=partitioning["obj"].discover(
                         *partitioning.get("args", []),
                         **partitioning.get("kwargs", {}),
