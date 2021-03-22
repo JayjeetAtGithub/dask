@@ -1555,6 +1555,7 @@ class ArrowDatasetEngine(Engine):
                 # We are filtering with "pyarrow-dataset".
                 # Need to convert the path and row-group IDs
                 # to a single "fragment" to read
+                print('Using format: ', format_)
                 ds = pa_ds.dataset(
                     path_or_frag,
                     filesystem=fs,
